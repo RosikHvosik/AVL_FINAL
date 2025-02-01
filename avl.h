@@ -9,13 +9,12 @@
 
 struct TreeNode {
 	FIO key;
-    int count;
 	int bal;
     TreeNode* left;
     TreeNode* right;
 	List lines;
 
-		 TreeNode(const FIO& fio, int count, int bal, TreeNode* left, TreeNode* right, int line) : key(fio), count(1), bal(0), left(nullptr), right(nullptr){
+		 TreeNode(const FIO& fio, int count, int bal, TreeNode* left, TreeNode* right, int line) : key(fio), bal(0), left(nullptr), right(nullptr){
 			lines.appendToBegin(line);
 		 }
 };
@@ -166,7 +165,6 @@ class AVL_tree{
 
         p->lines.appendToBegin(line);
         std::cout << "Добавлена строка " << line << " в узел с ключом: " << p->key.surname << std::endl;
-        p->count++;
         h = false;
     }
 }
