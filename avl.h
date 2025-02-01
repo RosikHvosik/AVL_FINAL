@@ -52,10 +52,8 @@ class AVL_tree{
     while (std::getline(inFile, line)) {
         lineNumber++;
         try {
-            
             auto [surname, name, patronymic] = parseFullName(line);
             FIO fio(surname, name, patronymic);
-
             insert(fio, root, heightIncreased, lineNumber);
         } catch (const std::exception& e) {
             std::cerr << "Ошибка в строке " << lineNumber << ": " << e.what() << std::endl;
@@ -66,88 +64,112 @@ class AVL_tree{
 }
 
 
-	void insert(FIO fio, TreeNode*& p, bool& h, int line) {
-		TreeNode* p1;
-		TreeNode* p2;
-		if (p == nullptr){
-			p = new TreeNode(fio, 1, 0, nullptr, nullptr, line);
-			h = true;
-		}
-		else if(p->key > fio){
-			insert (fio, p->left, h, line);
-			if (h){
-				if(p->bal == 1){
-					p->bal = 0;
-					h= false;
-				}
-				else if (p->bal == 0){
-					p->bal = -1;
-				}
-				
-				else{
-					p1 = p->left;
-					if (p1->bal == -1){
-						p->left = p1->right;
-						p1->right = p;
-						p->bal = 0;
-						p = p1;
-					}
-					else{
-						p2 = p1->right;
-						p1->right = p2->left;
-						p2->left = p1;
-						p->left = p2->right;
-						p2->right = p;
-						if(p2->bal == -1){p->bal = 1;}
-						else{p->bal = 0;}
-						if (p2->bal == 1){p1->bal = -1;}
-						else{p1->bal = 0;}
-						p = p2;
-					}
-					p->bal = 0;
-					h = false;
-				}
-			}
-		}
-		else if(p->key < fio){
-			insert (fio, p->right, h, line);
-			if (h){
-				if (p->bal == -1) {p->bal=0; h=false;}
-				else if(p->bal == 0){p->bal = 1;}
-				else {
-					p1= p->right;
-					if (p1->bal == 1){
-						p->right = p1->left;
-						p1->left = p;
-						p->bal = 0;
-						p = p1;
-					}
-					else{
-						p2 = p1->left;
-						p1->left = p2->right;
-						p2->right = p1;
-						p->right = p2->left;
-						p2->left = p;
-						if (p2->bal == 1){p->bal = -1;}
-						else{p->bal = 0;}
-						if(p2->bal == -1){p1->bal = 1;}
-						else{p1->bal = 0;}
-						p = p2;
-					}
-					p->bal =0;
-					h= false;
-				}
-			}
-			else {
-                if (!p->lines.contains(line)){
-                    p->lines.appendToBegin(line);
-                }
-                p->count++;
-                h=false;
-            }
-		}
-	}
 
+	void insert(FIO fio, TreeNode*& p, bool& h, int line) {
+    TreeNode* p1;
+    TreeNode* p2;
+
+    if (p == nullptr) {
+        p = new TreeNode(fio, 1, 0, nullptr, nullptr, line);
+        h = true;
+    } else if (p->key > fio) {
+        insert(fio, p->left, h, line);
+
+        if (h) {
+            if (p->bal == 1) {
+                p->bal = 0;
+                h = false;
+            } else if (p->bal == 0) {
+                p->bal = -1;
+            } else {
+                p1 = p->left;
+
+                if (p1->bal == -1) {
+                    // Right rotation
+                    std::cout << "Right rotation\n";
+                    p->left = p1->right;
+                    p1->right = p;
+                    p->bal = 0;
+                    p = p1;
+                } else {
+                    // Left-right rotation
+                    std::cout << "Left-right rotation\n";
+                    p2 = p1->right;
+                    p1->right = p2->left;
+                    p2->left = p1;
+                    p->left = p2->right;
+                    p2->right = p;
+
+                    if (p2->bal == -1) {
+                        p->bal = 1;
+                    } else {
+                        p->bal = 0;
+                    }
+
+                    if (p2->bal == 1) {
+                        p1->bal = -1;
+                    } else {
+                        p1->bal = 0;
+                    }
+                    p = p2;
+                }
+                p->bal = 0;
+                h = false;
+            }
+        }
+    } else if (p->key < fio) {
+        insert(fio, p->right, h, line);
+
+        if (h) {
+            if (p->bal == -1) {
+                p->bal = 0;
+                h = false;
+            } else if (p->bal == 0) {
+                p->bal = 1;
+            } else {
+                p1 = p->right;
+
+                if (p1->bal == 1) {
+                    // Left rotation
+                    std::cout << "Left rotation\n";
+                    p->right = p1->left;
+                    p1->left = p;
+                    p->bal = 0;
+                    p = p1;
+                } else {
+                    // Right-left rotation
+                    std::cout << "Right-left rotation\n";
+                    p2 = p1->left;
+                    p1->left = p2->right;
+                    p2->right = p1;
+                    p->right = p2->left;
+                    p2->left = p;
+
+                    if (p2->bal == 1) {
+                        p->bal = -1;
+                    } else {
+                        p->bal = 0;
+                    }
+
+                    if (p2->bal == -1) {
+                        p1->bal = 1;
+                    } else {
+                        p1->bal = 0;
+                    }
+                    p = p2;
+                }
+                p->bal = 0;
+                h = false;
+            }
+        }
+    } else {
+
+        p->lines.appendToBegin(line);
+        std::cout << "Добавлена строка " << line << " в узел с ключом: " << p->key.surname << std::endl;
+        p->count++;
+        h = false;
+    }
+}
 	void balanceL(TreeNode*& p, bool& h) {
     TreeNode* p1;
     TreeNode* p2;
@@ -222,7 +244,6 @@ void balanceR(TreeNode*& p, bool& h) {
         if (p1->bal <= 0) { 
             p->left = p1->right;
             p1->right = p;
-            std::swap(p->lines,p1->lines);
             if (p1->bal == 0) {
                 p->bal = -1;
                 p1->bal = 1;
@@ -394,7 +415,6 @@ void virtDel(TreeNode*& r, bool& h, TreeNode*& q, unsigned int rowIndex){
     outFile.close();  
     }
 
-
 void printTree(TreeNode* node, int depth = 0) const {
     if (node != nullptr) {
 
@@ -423,6 +443,9 @@ void printTree(TreeNode* node, int depth = 0) const {
         printTree(node->left, depth + 1);
     }
 }
+
+
+
 
 
 

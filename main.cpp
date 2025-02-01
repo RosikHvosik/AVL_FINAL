@@ -22,8 +22,8 @@ int main() {
     tree.printTree(tree.root);
 
     try {
-        FIO fioToDelete("Ликов", "Иван", "Иванович");
-        int lineToDelete = 2;
+        FIO fioToDelete("Опоров", "Иван", "Иванович");
+        int lineToDelete = 3;
         bool heightDecreased = false;
 
         std::cout << "\nУдаляем элемент: " << fioToDelete.surname<<" "<<fioToDelete.name<<" "<<fioToDelete.patronymic<<" строка "<<lineToDelete<<"\n";
@@ -42,7 +42,7 @@ int main() {
         std::cerr << "Ошибка при записи файла: " << e.what() << std::endl;
         return 1;
     }
-    FIO fioToSearch("Ивано","Иван","Иванович");
+    FIO fioToSearch("Лидов","Иван","Иванович");
     std::cout<<"Элемент для поиска в дереве: "<<fioToSearch.surname<<" "<<fioToSearch.name<<" "<<fioToSearch.patronymic<<"\n"<< endl;
     tree.search(fioToSearch, tree.root);
     return 0;

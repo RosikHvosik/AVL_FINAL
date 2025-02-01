@@ -54,23 +54,29 @@ List& operator=(const List& other) {
 
 
     void appendToBegin(int value) {
-        Node* newNode = new Node(value);
-        Node* prev = nullptr;
-        if (begin == nullptr) {
-            begin = newNode;
-            last = begin;
-            begin->next = newNode;
-        }
-        else {
-            Node* temp = begin;
-            while (temp->next != begin) {
-                temp = temp->next;
-            }
-            temp->next = newNode;
-            newNode->next = begin;
-            begin = newNode;
-        }
+    Node* newNode = new Node(value);
+    if (begin == nullptr) {
+        begin = newNode;
+        last = newNode;
+        newNode->next = newNode;  // Кольцевое соединение
+    } else {
+        newNode->next = begin;
+        last->next = newNode;  // Замыкаем на новый узел
+        begin = newNode;
     }
+}
+
+    void appendToEnd(int value) {
+    Node* newNode = new Node(value);
+    if (begin == nullptr) {
+        begin = last = newNode;
+        newNode->next = newNode;
+    } else {
+        last->next = newNode;
+        newNode->next = begin;
+        last = newNode;
+    }
+}
 
 
 
@@ -199,10 +205,10 @@ List& operator=(const List& other) {
     }
 
     bool contains(int value) {
+        Node* temp = begin;
         if (begin == nullptr) {
             return false;
         }
-        Node* temp = begin;
         do {
             if (temp->data == value) {
                 return true;
